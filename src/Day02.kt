@@ -8,14 +8,10 @@ fun main() {
     part2(input).println()
 }
 
-private fun part1(data: List<List<Int>>): Int =
-    data.count { it.isSafe() }
+private fun part1(data: List<List<Int>>) = data.count { it.safe }
+private fun part2(data: List<List<Int>>) = data.count { it.safe || it.indices.any { i -> it.dropAt(i).safe } }
 
-private fun part2(data: List<List<Int>>): Int =
-    data.count { it.isSafe() || it.indices.any { i -> it.dropAt(i).isSafe() } }
-
-private val SAFE_DIFF = 1..3
-
-private fun List<Int>.isSafe() = zipWithNext().run {
-    (allIncreasing || allDecreasing) && all { (p, n) -> diff(p, n) in SAFE_DIFF }
-}
+private val List<Int>.safe get() = zipWithNext().let { (it.allIncreasing || it.allDecreasing) && it.diffGradually }
+private val List<Pair<Int, Int>>.allIncreasing get() = all { (a, b) -> a > b }
+private val List<Pair<Int, Int>>.allDecreasing get() = all { (a, b) -> a < b }
+private val List<Pair<Int, Int>>.diffGradually get() = all { (a, b) -> diff(a, b) in 1..3 }
