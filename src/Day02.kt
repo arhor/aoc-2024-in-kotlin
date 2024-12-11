@@ -9,13 +9,13 @@ fun main() {
 }
 
 private fun part1(data: List<List<Int>>): Int =
-    data.count { isSafe(it) }
+    data.count { it.isSafe() }
 
 private fun part2(data: List<List<Int>>): Int =
-    data.count { isSafe(it) || it.indices.any { index -> isSafe(it.toMutableList().apply { removeAt(index) }) } }
+    data.count { it.isSafe() || it.indices.any { i -> it.dropAt(i).isSafe() } }
 
 private val SAFE_DIFF = 1..3
 
-private fun isSafe(list: List<Int>) = list.zipWithNext().run {
-    (increasing || decreasing) && all { (p, n) -> diff(p, n) in SAFE_DIFF }
+private fun List<Int>.isSafe() = zipWithNext().run {
+    (allIncreasing || allDecreasing) && all { (p, n) -> diff(p, n) in SAFE_DIFF }
 }
